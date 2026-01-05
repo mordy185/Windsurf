@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e1e5e9;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom-color: #4facfe;
+            color: #4facfe;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .error {
+            border-left: 4px solid #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Customer Registration Demo</h1>
+            <p>Telecom Customer Registration System - Part of Windsurf Projects</p>
+        </div>
+        
+        <div class="content">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('register')">Register Customer</div>
+                <div class="tab" onclick="showTab('status')">Check Status</div>
+                <div class="tab" onclick="showTab('plans')">View Plans</div>
+                <div class="tab" onclick="showTab('docs')">API Docs</div>
+            </div>
+            
+            <!-- Registration Tab -->
+            <div id="register" class="tab-content active">
+                <h2>Register New Customer</h2>
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" list="phoneNumbersList" required>
+                        <datalist id="phoneNumbersList"></datalist>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plan">Service Plan</label>
+                        <select id="plan" name="plan" required>
+                            <option value="">Select a plan</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">Register Customer</button>
+                </form>
+                
+                <div id="registrationResponse" class="response" style="display: none;"></div>
+            </div>
+            
+            <!-- Status Tab -->
+            <div id="status" class="tab-content">
+                <h2>Check Registration Status</h2>
+                <form id="statusForm">
+                    <div class="form-group">
+                        <label for="customerId">Customer ID</label>
+                        <input type="text" id="customerId" name="customerId" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">Check Status</button>
+                </form>
+                
+                <div id="statusResponse" class="response" style="display: none;"></div>
+            </div>
+            
+            <!-- Plans Tab -->
+            <div id="plans" class="tab-content">
+                <h2>Available Service Plans</h2>
+                <button class="btn" onclick="loadPlans()">Load Plans</button>
+                <div id="plansResponse" class="response" style="display: none;"></div>
+                <div id="plansList"></div>
+            </div>
+            
+            <!-- API Docs Tab -->
+            <div id="docs" class="tab-content">
+                <h2>API Documentation</h2>
+                <div class="api-endpoint">
+                    <h4>POST /api/registration/register</h4>
+                    <p>Register a new customer</p>
+                </div>
+                <div class="api-endpoint">
+                    <h4>GET /api/registration/status/:customerId</h4>
+                    <p>Check customer registration status</p>
+                </div>
+                <div class="api-endpoint">
+                    <h4>GET /api/registration/plans</h4>
+                    <p>Get available service plans</p>
+                </div>
+                <div class="api-endpoint">
+                    <h4>GET /api/registration/phone-numbers</h4>
+                    <p>Get available phone numbers</p>
+                </div>
+                <p style="margin-top: 20px;">
+                    <strong>Project Location:</strong><br>
+                    This project is part of the Windsurf repository.<br>
+                    <a href="https://github.com/mordy185/Windsurf" target="_blank">View on GitHub</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/registration';
+        
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Load phone numbers
+        async function loadAvailablePhoneNumbers() {
+            try {
+                const response = await fetch(`${API_BASE}/phone-numbers`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const datalist = document.getElementById('phoneNumbersList');
+                    datalist.innerHTML = '';
+                    
+                    result.data.forEach(phone => {
+                        const option = document.createElement('option');
+                        option.value = phone.number;
+                        option.label = `${phone.number} - ${phone.category} (${phone.status})`;
+                        datalist.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading phone numbers:', error);
+            }
+        }
+        
+        // Load plans
+        async function loadPlans() {
+            try {
+                const response = await fetch(`${API_BASE}/plans`);
+                const result = await response.json();
+                
+                const responseDiv = document.getElementById('plansResponse');
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response ' + (response.ok ? 'success' : 'error');
+                responseDiv.textContent = JSON.stringify(result, null, 2);
+                
+                if (result.success && result.data) {
+                    const select = document.getElementById('plan');
+                    select.innerHTML = '<option value="">Select a plan</option>';
+                    
+                    result.data.forEach(plan => {
+                        const option = document.createElement('option');
+                        option.value = plan.id;
+                        option.textContent = `${plan.name} - $${plan.monthlyFee}/month`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading plans:', error);
+            }
+        }
+        
+        // Show response
+        function showResponse(elementId, data, isError = false) {
+            const responseDiv = document.getElementById(elementId);
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response ' + (isError ? 'error' : 'success');
+            responseDiv.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        // Form submissions
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                showResponse('registrationResponse', result, !response.ok);
+            } catch (error) {
+                showResponse('registrationResponse', { error: error.message }, true);
+            }
+        });
+        
+        document.getElementById('statusForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const customerId = document.getElementById('customerId').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/status/${customerId}`);
+                const result = await response.json();
+                showResponse('statusResponse', result, !response.ok);
+            } catch (error) {
+                showResponse('statusResponse', { error: error.message }, true);
+            }
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAvailablePhoneNumbers();
+            loadPlans();
+        });
+    </script>
+</body>
+</html>
